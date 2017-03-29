@@ -1,0 +1,5 @@
+google.com
+yahoo.com
+bing.com
+cnn.com
+foxnews.com
