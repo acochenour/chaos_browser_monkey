@@ -24,6 +24,30 @@ CONST SLEEPMIN = 2;
 CONST SLEEPMAX = 20;
 
 /*
+ * Set curl up to accept then bitbucket cookies
+ */
+$cFile = '/dev/null';
+
+/*
+ * Create some User Agent fodder
+ */
+$uaArray = array();
+$uaArray[] = 'Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0';
+$uaArray[] = 'Mozilla/5.0 (Android 4.4; Tablet; rv:41.0) Gecko/41.0 Firefox/41.0';
+$uaArray[] = 'Mozilla/5.0 (Windows NT x.y; rv:10.0) Gecko/20100101 Firefox/10.0';
+$uaArray[] = 'Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0';
+$uaArray[] = 'Mozilla/5.0 (Windows NT x.y; WOW64; rv:10.0) Gecko/20100101 Firefox/10.0';
+$uaArray[] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:10.0) Gecko/20100101 Firefox/10.0';
+$uaArray[] = 'Mozilla/5.0 (Macintosh; PPC Mac OS X x.y; rv:10.0) Gecko/20100101 Firefox/10.0';
+$uaArray[] = 'Mozilla/5.0 (X11; Linux i686; rv:10.0) Gecko/20100101 Firefox/10.0';
+$uaArray[] = 'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0';
+$uaArray[] = 'Mozilla/5.0 (X11; Linux i686 on x86_64; rv:10.0) Gecko/20100101 Firefox/10.0';
+$uaArray[] = 'Mozilla/5.0 (Maemo; Linux armv7l; rv:10.0) Gecko/20100101 Firefox/10.0 Fennec/10.0';
+$uaArray[] = 'Mozilla/5.0 (Mobile; rv:26.0) Gecko/26.0 Firefox/26.0';
+$uaArray[] = 'Mozilla/5.0 (Tablet; rv:26.0) Gecko/26.0 Firefox/26.0';
+$uaArray[] = 'Mozilla/5.0 (TV; rv:44.0) Gecko/44.0 Firefox/44.0';
+
+/*
  * Collect the domain file name from user input, otherwise exit
  */
 if (isset($argv[1])) 	{
@@ -58,15 +82,19 @@ if (isset($argv[1])) 	{
 				$domain = $cDomains[$rKey];
 				if (!empty($domain)) 	{
 					$curlSession = curl_init();
-					curl_setopt($curlSession,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+					$uaKey = array_rand($uaArray, 1);
+					curl_setopt($curlSession,CURLOPT_USERAGENT, $uaArray[$uaKey]);
 					curl_setopt($curlSession, CURLOPT_URL, "http://" . $domain);
 					curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);
 					curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
 					curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 0);
 					curl_setopt($curlSession, CURLOPT_SSL_VERIFYPEER, 0);
 					curl_setopt($curlSession, CURLOPT_FOLLOWLOCATION, true);
+					curl_setopt($curlSession, CURLOPT_COOKIESESSION, true);
+					curl_setopt($curlSession, CURLOPT_COOKIEFILE, $cFile);
+					curl_setopt($curlSession, CURLOPT_COOKIEJAR, $cFile);
 					/*
-					 * Grab then bit bucket the content
+					 * Grab then bitbucket the content
 					 */
 					$cOutput = curl_exec($curlSession);
 					echo "Chaos Monkey loves the browser bananas at " . $domain . "\n";
